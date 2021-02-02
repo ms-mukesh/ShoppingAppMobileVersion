@@ -1,0 +1,12 @@
+{
+  "name": "ShoppingProject",
+  "displayName": "ShoppingProject",
+  "expo": {
+    "name": "ShoppingProject",
+    "slug": "ShoppingProject",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
