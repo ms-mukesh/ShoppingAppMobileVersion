@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "252251806920",
+    "project_id": "marothiatextile-88b17",
+    "storage_bucket": "marothiatextile-88b17.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252251806920:android:7cdb3388c16f17b187d9fd",
+        "android_client_info": {
+          "package_name": "com.shoppingproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "252251806920-2okhkqq46s657tt6ulsdqf832p1qn2mt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBZNvEXdZIsjeFU9xC8dNoHunTC3-9nao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "252251806920-2okhkqq46s657tt6ulsdqf832p1qn2mt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
