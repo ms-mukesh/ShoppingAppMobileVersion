@@ -185,9 +185,6 @@ const MyAccountScreen = (props) => {
     } else if (checkNamesIsEmpty(User.email)) {
       alert('please enter correct email address');
       return;
-    } else if (User.profileImage === '') {
-      alert('please select your profile image');
-      return;
     } else {
       let obj = {
         inputFirstName: User?.firstName,
@@ -200,11 +197,38 @@ const MyAccountScreen = (props) => {
       if (isProfileImageChange) {
         dispatch(setLoaderStatus(true));
       }
-      uploadImageOnFirebase(isProfileImageChange ? User?.profileImage : '').then((imageUrl) => {
-        if (imageUrl) {
-          obj = { ...obj, inputImage: imageUrl };
-        }
+      if(User.profileImage !== ''){
+        uploadImageOnFirebase(isProfileImageChange ? User?.profileImage : '').then((imageUrl) => {
+          if (imageUrl) {
+            obj = { ...obj, inputImage: imageUrl };
+          }
 
+          dispatch(editUserProfile(obj)).then(async (res) => {
+            if (res) {
+              AsyncStorage.getItem('userLoginDetail').then(async (res) => {
+                if (res) {
+                  let userReduxObj = JSON.parse(res);
+                  userReduxObj = {
+                    ...userReduxObj,
+                    firstName: User?.firstName,
+                    lastName: User?.lastName,
+                    middleName: User?.middleName,
+                    email: User?.email,
+                    gender: gender ? 'MALE' : 'FEMALE',
+                    image: imageUrl ? imageUrl : User?.profileImage,
+                  };
+                  await AsyncStorage.removeItem('userLoginDetail');
+                  await AsyncStorage.setItem('userLoginDetail', JSON.stringify(userReduxObj));
+                  dispatch(setUserDetails(userReduxObj));
+                  setUser({ ...userDefaultObj });
+                  props.navigation.goBack();
+                }
+              });
+            }
+          });
+        });
+      } else {
+        obj = { ...obj, inputImage: User?.profileImage };
         dispatch(editUserProfile(obj)).then(async (res) => {
           if (res) {
             AsyncStorage.getItem('userLoginDetail').then(async (res) => {
@@ -217,7 +241,7 @@ const MyAccountScreen = (props) => {
                   middleName: User?.middleName,
                   email: User?.email,
                   gender: gender ? 'MALE' : 'FEMALE',
-                  image: imageUrl ? imageUrl : User?.profileImage,
+                  image: User?.profileImage,
                 };
                 await AsyncStorage.removeItem('userLoginDetail');
                 await AsyncStorage.setItem('userLoginDetail', JSON.stringify(userReduxObj));
@@ -228,7 +252,10 @@ const MyAccountScreen = (props) => {
             });
           }
         });
-      });
+
+
+      }
+
     }
   };
   const _RenderUserAddress = (item, index) => {

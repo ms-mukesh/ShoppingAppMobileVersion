@@ -148,6 +148,7 @@ function newOpen(){//184 064 323 438
       });
     }
   }, []);
+
   const renderLoginView = () => {
     return (
       <View style={{ flex: 1 }}>

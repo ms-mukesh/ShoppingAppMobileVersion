@@ -1,13 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
     Modal,
     StyleSheet,
     TouchableWithoutFeedback,
     View,
     Image,
+    PanResponder,
     ActivityIndicator, ScrollView, TouchableOpacity,Text,SafeAreaView
 } from 'react-native';
-import {color, font, hp, normalize, wp} from '../../helper/themeHelper';
+import {color, font, hp, normalize, screenHeight, screenWidth, wp} from '../../helper/themeHelper';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import ImageZoom from 'react-native-image-pan-zoom';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {GENDER} from '../../helper/constant';
@@ -17,8 +20,31 @@ import {cross_black_icon} from "../../assets/images";
 
 const ImagePreview = props => {
     const {imgArray = [] ,setPreviewClose,editOption=false,onPressEdit=null } = props;
+    const images = [
+        {
+            url:imgArray[0]
+        },
+    ];
+    imgArray.map((item,index)=>{
+        if(index>0){
+            images.push({url:item})
+        }
+    })
+
     const {mainView, closeButton, imgView} = styles;
     const [isLoader, setIsLoader] = useState(false);
+    // const [images,setImages] = useState([])
+    // useEffect(()=>{
+    //     let tempArray = []
+    //    imgArray.map((item)=>{
+    //         tempArray.push({
+    //             url:item
+    //         })
+    //    })
+    //
+    //     setImages(tempArray)
+    //     console.log(images)
+    // },[])
     return (
         <Modal
             onRequestClose={() => setPreviewClose()}
@@ -52,24 +78,31 @@ const ImagePreview = props => {
                     size={'large'}
                     color={'gray'}
                 />
+                <ImageViewer
+                    imageUrls={images}
+                    renderIndicator={() => null}
+                />
 
 
-                <ScrollView
-                    scrollEventThrottle={16}
-                    pagingEnabled={true}
-                    horizontal={true}
-                    scrollEnabled={true}
-                    nestedScrollEnabled={true}>
-                    {imgArray?.map((item)=>{
-                        return(
+                {/*<ScrollView*/}
+                {/*    scrollEventThrottle={16}*/}
+                {/*    pagingEnabled={true}*/}
+                {/*    minimumZoomScale={1} maximumZoomScale={5}*/}
+                {/*    horizontal={true}*/}
+                {/*    scrollEnabled={true}*/}
+                {/*    zoomEnabled={true}*/}
+                {/*    nestedScrollEnabled={true}>*/}
+                {/*    /!*<ImageViewer imageUrls={images}/>*!/*/}
 
-                                <View style={{flex: 1, width: wp(100)}}>
-                                    <Image resizeMode={'contain'} style={{ height:hp(100),
-                                        width:wp(100)}} source={{uri:item}}/>
-                                </View>
-                        )
-                    })}
-                </ScrollView>
+                {/*    {imgArray?.map((item,index)=>{*/}
+                {/*        return(*/}
+                {/*                <View key={"index"+index+"k"} style={{flex: 1, width: wp(100)}}>*/}
+                {/*                    <Image resizeMode={'contain'} style={{ height:hp(100),*/}
+                {/*                        width:wp(100)}} source={{uri:item}}/>*/}
+                {/*                </View>*/}
+                {/*        )*/}
+                {/*    })}*/}
+                {/*</ScrollView>*/}
 
 
             </SafeAreaView>

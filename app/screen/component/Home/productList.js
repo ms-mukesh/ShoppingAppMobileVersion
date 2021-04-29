@@ -4,41 +4,31 @@ import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet } from 'react
 import { useDispatch, useSelector } from 'react-redux';
 import { GoBackHeader, GradientBackground, Loading } from '../../common';
 import { hp, wp, normalize, color } from '../../../helper/themeHelper';
-import { rupee_icon } from '../../../assets/images';
-import {
-  addItemToRecentItemList,
-  getProductDetail,
-  getRecentItemList,
-} from '../../../redux/actions/homeScreenActions';
+
 
 const ProductListScreen = (props) => {
   const isLoading = useSelector((state) => state.appDefaultSettingReducer.isLoading);
   const { data } = props.route.params;
-  const dispatch = useDispatch();
-  const rupeesIcon = () => {
-    return <Image style={{ height: hp(2), width: hp(2) }} source={rupee_icon} />;
-  };
-
-  const displayProductDetailPage = (productId) => {
-    // productDetail = {...productDetail,images:productDetail?.images?.split(",")}
-    dispatch(getProductDetail({ inputProductId: productId }))
-      .then(async (res) => {
-        if (res) {
-          props.navigation.navigate('ProductDetail', {
-            productDetails: res,
-            productId: productId,
-            productName: res?.name,
-            isFromShareLink : false
-          });
-        } else {
-          alert('fail to get product data');
-        }
-      })
-      .catch((err) => {
-        alert('fail to get product data');
-      });
-  };
-  const moveToProductDetailPage = (productId, image = null, price = 0, name = '') => {
+  const moveToProductDetailPage = (productId = 0, image = null, price = 0, name = '') => {
+    // console.log("data--", {
+    //   // productDetails: res,
+    //   productId: productId,
+    //   productImage: image,
+    //   price: price,
+    //   productName: name,
+    //   isFromShareLink : false
+    //   // productName: res?.name,
+    // })
+    //
+    // alert(JSON.stringify({
+    //   // productDetails: res,
+    //   productId: productId,
+    //   productImage: image,
+    //   price: price,
+    //   productName: name,
+    //   isFromShareLink : false
+    //   // productName: res?.name,
+    // }))
     props.navigation.navigate('ProductDetail', {
       // productDetails: res,
       productId: productId,
@@ -48,45 +38,13 @@ const ProductListScreen = (props) => {
       isFromShareLink : false
       // productName: res?.name,
     });
-    // dispatch(getProductDetail({ inputProductId: productId }))
-    //   .then(async (res) => {
-    //     if (res) {
-    //       props.navigation.navigate('ProductDetail', {
-    //         productDetails: res,
-    //         productId: productId,
-    //         productName: res?.name,
-    //       });
-    //     } else {
-    //       alert('fail to get product data');
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     alert('fail to get product data');
-    //   });
   };
-  // const moveToProductDetailPage = (productId) => {
-  //   dispatch(getProductDetail({ inputProductId: productId }))
-  //     .then(async (res) => {
-  //       if (res) {
-  //         props.navigation.navigate('ProductDetail', {
-  //           productDetails: res,
-  //           productId: productId,
-  //           productName: res?.name,
-  //         });
-  //       } else {
-  //         alert('fail to get product data');
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       alert('fail to get product data');
-  //     });
-  // };
 
   const renderProductList = ({ item, index }) => {
     return (
-      <View key={Math.random() + 'DE'} style={[style.mainView]}>
+      <View key={index + 'DEJ'} style={[style.mainView]}>
         <TouchableOpacity
-          activeOpacity={0.8}
+          // activeOpacity={0.8}
           onPress={() => {
             moveToProductDetailPage(item?.product, item?.image, item?.price, item?.name);
           }}

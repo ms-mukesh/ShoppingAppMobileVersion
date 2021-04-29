@@ -276,7 +276,7 @@ const PlaceDirectOrderScreen = (props) => {
             multiline={true}
             numberOfLines={4}
             inputStyle={style.floatingInputStyle}
-            style={[style.floatingStyle, { width: wp(30) }]}
+            style={[style.floatingStyle]}
             label={lable + '  '}
             editable={true}
             value={value}
@@ -292,7 +292,7 @@ const PlaceDirectOrderScreen = (props) => {
           <FloatingLabel
             numberOfLines={1}
             inputStyle={style.floatingInputStyle}
-            style={[style.floatingStyle, { width: wp(30) }]}
+            style={[style.floatingStyle]}
             label={lable + '  '}
             editable={true}
             value={value}
@@ -603,7 +603,7 @@ const PlaceDirectOrderScreen = (props) => {
               inputPaymentStatus: false,
             };
             const razorPayConfig = {
-              description: 'You are paying to Marothia Textile',
+              description: 'Your Payment is secure by RazorPay.',
               image: 'https://i.imgur.com/3g7nmJC.png',
               currency: 'INR',
               key: RAZOR_PAY_KEY,

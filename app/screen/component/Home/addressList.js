@@ -65,7 +65,7 @@ const AddressListScreen = (props) => {
             multiline={true}
             numberOfLines={4}
             inputStyle={style.floatingInputStyle}
-            style={[style.floatingStyle, { width: wp(30) }]}
+            style={[style.floatingStyle]}
             label={lable + '  '}
             editable={true}
             value={value}
@@ -81,7 +81,7 @@ const AddressListScreen = (props) => {
           <FloatingLabel
             numberOfLines={1}
             inputStyle={style.floatingInputStyle}
-            style={[style.floatingStyle, { width: wp(30) }]}
+            style={[style.floatingStyle]}
             label={lable + '  '}
             editable={true}
             value={value}

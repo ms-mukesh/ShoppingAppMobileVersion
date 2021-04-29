@@ -11,9 +11,7 @@ import {
   Keyboard,
   Image,
   FlatList,
-  Linking,
-  Share,
-  DeviceEventEmitter,
+  BackHandler
 } from 'react-native';
 import SharedPreferences from 'react-native-shared-preferences';
 import { AppButton, AppHeader, GradientBackground, Loading } from '../../common';
@@ -44,6 +42,7 @@ import {
 import { defaultFilterObject } from '../../../helper/constant';
 import * as Sharing from 'expo-sharing';
 import FastImage from 'react-native-fast-image';
+import RNExitApp from 'react-native-exit-app';
 // import RNUpiPayment from 'react-native-upi-payment';
 const dummyAdvertisment = [
   {
@@ -160,6 +159,10 @@ const HomePage = (props) => {
     console.log(data);
     //nothing happened here using Google Pay
   };
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+        return () => BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    }, []);
 
   useEffect(() => {
     dispatch(getAllCategories()).then(async (res) => {
@@ -221,6 +224,18 @@ const HomePage = (props) => {
       }
     }
   });
+    const handleBackPress = () => {
+        Alert.alert('M-Textile', 'Are you sure you want to exit?', [
+            {
+                text: 'No',
+                onPress: () => null,
+                style: 'cancel',
+            },
+            {text: 'YES', onPress: () => RNExitApp.exitApp()},
+        ]);
+
+        return true;
+    };
   const renderTrendingProduct = ({ item, index }) => {
     return (
       <View key={Math.random() + 'DE'} style={style.mainView}>

@@ -106,6 +106,7 @@ const SignUpScreen = (props) => {
                     style={floatingStyle}
                     value={userdata.mobile}
                     returnKeyType={'done'}
+                    keyboardType={'phone-pad'}
                     onBlur={() => {
                       if (
                         userdata.mobile.length !== 10 ||

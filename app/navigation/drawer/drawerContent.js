@@ -536,7 +536,7 @@ export const DrawerContent = (props) => {
             >
               <Image
                 source={rightIconSource}
-                style={{ height: hp(2.5), width: hp(2.5), marginLeft: wp(24) }}
+                style={{ height: hp(2.5), width: hp(2.5), marginLeft: wp(21) }}
               />
             </TouchableOpacity>
           )}
@@ -549,7 +549,7 @@ export const DrawerContent = (props) => {
             >
               <Image
                 source={rightIconSourceForProduct}
-                style={{ height: hp(2.5), width: hp(2.5), marginLeft: wp(24) }}
+                style={{ height: hp(2.5), width: hp(2.5), marginLeft: wp(20) }}
               />
             </TouchableOpacity>
           )}

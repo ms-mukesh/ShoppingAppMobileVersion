@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { CommonActions } from '@react-navigation/native';
+import Share from 'react-native-share';
 import {
   View,
   Text,
@@ -9,11 +10,12 @@ import {
   TouchableOpacity,
   FlatList,
   AsyncStorage,
-  Share,
   BackHandler,
+    PermissionsAndroid
 } from 'react-native';
 import { GoBackHeader, ImagePreview, Loading, rupeesIcon } from '../../common';
 import { useDispatch, useSelector } from 'react-redux';
+const RNFS = require('react-native-fs');
 import {
   addItemToCart,
   addItemToRecentItemList,
@@ -23,11 +25,15 @@ import {
   removeItemFromCart,
 } from '../../../redux/actions/homeScreenActions';
 
-import { hp, wp, normalize, color } from '../../../helper/themeHelper';
+import {hp, wp, normalize, color, isANDROID, isIOS} from '../../../helper/themeHelper';
 import { center } from '../../../helper/styles';
 import { star_empty, star_filled } from '../../../assets/images';
 import AutoCompleteModel from '../../common/AutoCompleteBox';
 import FastImage from 'react-native-fast-image';
+import moment from "moment";
+import RNFetchBlob from 'rn-fetch-blob';
+import {setLoaderStatus} from "../../../redux/actions/dashboardAction";
+import {settingPermissionForToggle} from "../../../helper/permissionHelper";
 
 const ProductDetailScreen = (props) => {
   const {
@@ -83,6 +89,85 @@ const ProductDetailScreen = (props) => {
       props.navigation.goBack();
     }
     return true;
+  };
+  const onImageDownloadForSharing = (filePath, flag = false) => {
+    return new Promise(resolve => {
+      const baseDir = isANDROID ? RNFetchBlob.fs.dirs.DownloadDir : RNFetchBlob.fs.dirs.DocumentDir;
+      const fileName = 'M-Textile-img' + moment().unix();
+      const path = `${baseDir}/M-Textile/${fileName}.jpeg`;
+      RNFetchBlob.config({
+        fileCache: false,
+        addAndroidDownloads: {
+          appendExt: 'jpeg',
+          useDownloadManager: true,
+          path: path,
+          mime: 'image/jpeg',
+          fileCache: false,
+        },
+        path: path,
+      }).fetch('GET', filePath, {
+            'Cache-Control': 'no-store',
+          })
+          .then(resp => {
+            if (resp.path()) {
+              if (flag) {
+                if (isIOS) {
+                  RNFetchBlob.ios.previewDocument(resp.path());
+                } else {
+                  RNFetchBlob.android.actionViewIntent(resp.path(), 'image/jpeg');
+                }
+              }
+              resolve(resp.path());
+            } else {
+              alert('Failed Downloaded!');
+              resolve(false);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            resolve(false);
+          });
+    });
+  };
+  const shareButtonPress = async (url, message) => {
+    dispatch(setLoaderStatus(true))
+    onImageDownloadForSharing(url).then(async res => {
+      // dispatch(setLoaderStatus(false))
+      if (res) {
+        const sharingPath = isIOS ? res : 'file://' + res;
+        console.log(res,"sharing path--",sharingPath)
+        await Share.open({type: 'application/image', url: sharingPath, title: message,message:message})
+            .then(res => {
+              dispatch(setLoaderStatus(false))
+              // if (isANDROID) {
+              //   console.log(res);
+              //   setTimeout(() => {
+              //     RNFS.unlink(sharingPath)
+              //         .then(() => {})
+              //         .catch(err => {
+              //           console.log(err);
+              //         });
+              //   }, 10000);
+              // }
+            })
+            .catch(err => {
+              console.log("error--",err)
+              dispatch(setLoaderStatus(false))
+              err && console.log(err);
+              if (isANDROID) {
+                setTimeout(() => {
+                  RNFS.unlink(sharingPath)
+                      .then(() => {})
+                      .catch(err => {
+                        console.log(err);
+                      });
+                }, 1000);
+              }
+            });
+      }
+    }).catch((err)=>{
+      dispatch(setLoaderStatus(false))
+    });
   };
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
@@ -703,13 +788,34 @@ const ProductDetailScreen = (props) => {
             })}
           </View>
         )}
+
         {!isFromShareLink && (
           <View style={[style.mainView]}>
             <TouchableOpacity
-              onPress={() => {
-                Share.share({
-                  message: 'http://middlepagev-2.surge.sh/?' + productId,
-                });
+              onPress={async () => {
+                const readGranted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                );
+                if (
+                    readGranted === PermissionsAndroid.RESULTS.DENIED ||
+                    readGranted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
+                ){
+                  settingPermissionForToggle(
+                      'Want to change your storage permission ?',
+                      'Please Allow and Goto Settings-> Permissions -> Storage',
+                  );
+                } else {
+                  await shareButtonPress(productDetails?.images?.split(',')[0],'http://m-textile-v6.surge.sh/?id=' + productId)
+                }
+
+                // console.log({
+                //   message: 'http://middlepagev-3.surge.sh/?' + productId,
+                //   url:productDetails?.images?.split(',')[0]
+                // })
+                // Share.open({
+                //   // message: 'http://middlepagev-3.surge.sh/?' + productId,
+                //   url:productDetails?.images?.split(',')[0]
+                // });
               }}
             >
               <View

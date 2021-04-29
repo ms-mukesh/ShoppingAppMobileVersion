@@ -31,6 +31,8 @@ export const Api = async (endpoint, method, data = null) => {
   console.log('token--', token);
   // let deviceId = await getDeviceId();
   let randomNumber = (await new Date().getTime().toString()) + generateRandomNumber();
+
+
   endpoint =
     endpoint.indexOf('?') > -1
       ? endpoint + '&randomKey=' + randomNumber
